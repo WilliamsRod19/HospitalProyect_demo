@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<SpecialtyRepository>();
 builder.Services.AddScoped<StaffCategoryRepository>();
 builder.Services.AddScoped<StaffRepository>();
+builder.Services.AddScoped<AuthRepository>();
 
 var app = builder.Build();
 
@@ -31,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();
