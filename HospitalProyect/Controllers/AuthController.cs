@@ -1,6 +1,9 @@
 ﻿using HospitalProyect.Models;
 using HospitalProyect.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HospitalProyect.Controllers
 {
@@ -46,7 +49,7 @@ namespace HospitalProyect.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Login(string email, string password)
+		public async Task<IActionResult> Login(string email, string password)
 		{
 			if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
 			{
@@ -58,6 +61,17 @@ namespace HospitalProyect.Controllers
 
 			if (user != null)
 			{
+				var claims = new List<Claim>
+				{
+					new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+					new Claim(ClaimTypes.Name, user.Name),
+					new Claim(ClaimTypes.Email, user.Email)
+				};
+
+				var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
 				return RedirectToAction("Index", "Home");
 			}
 			else
@@ -67,6 +81,12 @@ namespace HospitalProyect.Controllers
 
 			ViewBag.Error = "Correo o contraseña incorrectos";
 			return View();
+		}
+
+		public async Task<IActionResult> Logout()
+		{
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			return RedirectToAction(nameof(Login));
 		}
 
 
