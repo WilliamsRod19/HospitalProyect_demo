@@ -25,6 +25,9 @@ namespace HospitalProyect.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult Register(UserModel userModel)
 		{
+			userModel.RoleId = 2;
+			ModelState.Remove("Role");
+
 			if (ModelState.IsValid)
 			{
 				bool isRegistered = _authRepository.RegisterUser(userModel);
@@ -65,7 +68,9 @@ namespace HospitalProyect.Controllers
 				{
 					new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
 					new Claim(ClaimTypes.Name, user.Name),
-					new Claim(ClaimTypes.Email, user.Email)
+					new Claim(ClaimTypes.Email, user.Email),
+					new Claim("UserId", user.Id.ToString()),
+					new Claim(ClaimTypes.Role, user.Role.Name)
 				};
 
 				var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

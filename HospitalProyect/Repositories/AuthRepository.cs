@@ -1,5 +1,6 @@
 ﻿using HospitalProyect.Data;
 using HospitalProyect.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalProyect.Repositories
 {
@@ -28,7 +29,7 @@ namespace HospitalProyect.Repositories
 
 		public UserModel ValidateUser(string email, string password)
 		{
-			return _applicationDbContext.UserModel.FirstOrDefault(u => u.Email == email && u.Password == password);
+			return _applicationDbContext.UserModel.Include(u => u.Role).FirstOrDefault(u => u.Email == email && u.Password == password);
 		}
 
 	}

@@ -18,6 +18,7 @@ builder.Services.AddScoped<StaffCategoryRepository>();
 builder.Services.AddScoped<StaffRepository>();
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<DashboardRepository>();
+builder.Services.AddScoped<RoleRepository>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(
